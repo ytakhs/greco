@@ -9,13 +9,9 @@ import (
 
 // Client contains github.Client
 type Client struct {
-	owner  string
-	repo   string
-	GitHub *github.Client
-}
-
-type ClientListOptions struct {
-	ListOptions *github.ListOptions
+	owner        string
+	repo         string
+	Repositories *github.RepositoriesService
 }
 
 func NewClient(owner string, repo string, token string) (*Client, error) {
@@ -31,20 +27,33 @@ func NewClient(owner string, repo string, token string) (*Client, error) {
 	}
 
 	client := &Client{
-		owner:  owner,
-		repo:   repo,
-		GitHub: gh,
+		owner:        owner,
+		repo:         repo,
+		Repositories: gh.Repositories,
 	}
 
 	return client, nil
 }
 
-func NewListOptions(page int, per_page int) (*ClientListOptions, error) {
-	listOptions := &github.ListOptions{
+func (c *Client) Tags(per int, page int) ([]*github.RepositoryTag, error) {
+	opt := &github.ListOptions{
 		Page:    page,
-		PerPage: per_page,
+		PerPage: per,
 	}
-	return &ClientListOptions{
-		ListOptions: listOptions,
-	}, nil
+
+	tags, _, err := c.Repositories.ListTags(context.Background(), c.owner, c.repo, opt)
+	if err != nil {
+		return nil, err
+	}
+
+	return tags, nil
+}
+
+func (c *Client) Compare(from string, to string) (*github.CommitsComparison, error) {
+	comparison, _, err := c.Repositories.CompareCommits(context.Background(), c.owner, c.repo, from, to)
+	if err != nil {
+		return nil, err
+	}
+
+	return comparison, err
 }

@@ -22,6 +22,9 @@ func (r *Runner) Run(args []string) int {
 		"tags": func() (cli.Command, error) {
 			return &command.Tags{Name: "tags"}, nil
 		},
+		"browse": func() (cli.Command, error) {
+			return &command.Browse{Name: "browse"}, nil
+		},
 	}
 
 	exitStatus, err := c.Run()

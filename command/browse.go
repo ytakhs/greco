@@ -6,30 +6,27 @@ import (
 	"os"
 
 	client "github.com/jit-y/greco/github"
+	"github.com/pkg/browser"
 )
 
-var tagsUsage = `
-Usage: greco tags [options] <owner> <repo>
-`
-
-type Tags struct {
+type Browse struct {
 	Name string
 }
 
-func (c *Tags) Synopsis() string {
-	return "Tag"
+var browseUsage = `
+Usage: greco browse [options] <owner> <repo> <from> <to>
+`
+
+func (c *Browse) Synopsis() string {
+	return "Browse"
 }
 
-func (c *Tags) Help() string {
-	return tagsUsage
+func (c *Browse) Help() string {
+	return browseUsage
 }
 
-func (c *Tags) Run(args []string) int {
-	var (
-		token string
-		page  int
-		per   int
-	)
+func (c *Browse) Run(args []string) int {
+	var token string
 
 	flags := flag.NewFlagSet(c.Name, flag.ContinueOnError)
 	flags.Usage = func() {
@@ -39,16 +36,13 @@ func (c *Tags) Run(args []string) int {
 
 	flags.StringVar(&token, "token", os.Getenv("GITHUB_TOKEN"), "")
 	flags.StringVar(&token, "t", os.Getenv("GITHUB_TOKEN"), "")
-	flags.IntVar(&page, "page", 1, "")
-	flags.IntVar(&per, "per", 10, "")
-	flags.IntVar(&per, "p", 10, "")
 
 	if err := flags.Parse(args); err != nil {
 		return 1
 	}
 
 	cmdArgs := flags.Args()
-	if len(cmdArgs) < 2 {
+	if len(cmdArgs) < 4 {
 		fmt.Fprintln(flags.Output(), c.Help())
 		flags.PrintDefaults()
 		return 1
@@ -56,22 +50,26 @@ func (c *Tags) Run(args []string) int {
 
 	owner := cmdArgs[0]
 	repo := cmdArgs[1]
+	from := cmdArgs[2]
+	to := cmdArgs[3]
 
 	github, err := client.NewClient(owner, repo, token)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err)
+		fmt.Fprintln(os.Stderr, err)
 		return 1
 	}
 
-	tags, err := github.Tags(per, page)
+	comparison, err := github.Compare(from, to)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err)
+		fmt.Fprintln(os.Stderr, err)
 		return 1
 	}
 
-	for _, tag := range tags {
-		fmt.Println(tag.GetName())
+	err = browser.OpenURL(*comparison.HTMLURL)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return 1
 	}
 
 	return 0

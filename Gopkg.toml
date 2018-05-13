@@ -36,6 +36,10 @@
   name = "golang.org/x/oauth2"
   branch = "master"
 
+[[constraint]]
+  name = "github.com/pkg/browser"
+  branch = "master"
+
 [prune]
   go-tests = true
   unused-packages = true
