@@ -14,7 +14,7 @@ Usage: greco tags [options] <owner> <repo>
 `
 
 type Tags struct {
-	name string
+	Name string
 }
 
 func (c *Tags) Synopsis() string {
@@ -32,7 +32,7 @@ func (c *Tags) Run(args []string) int {
 		per   int
 	)
 
-	flags := flag.NewFlagSet(c.name, flag.ContinueOnError)
+	flags := flag.NewFlagSet(c.Name, flag.ContinueOnError)
 	flags.Usage = func() {
 		fmt.Fprint(flags.Output(), c.Help())
 		flags.PrintDefaults()
@@ -65,8 +65,6 @@ func (c *Tags) Run(args []string) int {
 		return 1
 	}
 
-	fmt.Println(page)
-	fmt.Println(per)
 	opt, err := client.NewListOptions(page, per)
 	if err != nil {
 		return 1

@@ -2,7 +2,6 @@ package github
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -23,10 +22,8 @@ func NewClient(owner string, repo string, token string) (*Client, error) {
 	var gh *github.Client
 
 	if token == "" {
-		fmt.Println("without authentication...")
 		gh = github.NewClient(nil)
 	} else {
-		fmt.Println("with authentication...")
 		ctx := context.Background()
 		ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 		tc := oauth2.NewClient(ctx, ts)
