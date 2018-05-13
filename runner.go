@@ -20,7 +20,10 @@ func (r *Runner) Run(args []string) int {
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"tags": func() (cli.Command, error) {
-			return &command.Tags{Name: "tags"}, nil
+			return command.NewTagsCommand("tags", r.out, r.err)
+		},
+		"browse": func() (cli.Command, error) {
+			return command.NewBrowseCommand("browse", r.out, r.err)
 		},
 	}
 

@@ -68,6 +68,12 @@
   revision = "c48282d14eba4b0817ddef3f832ff8d13851aefd"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/pkg/browser"
+  packages = ["."]
+  revision = "c90ca0c84f15f81c982e32665bffd8d7aac8f097"
+
+[[projects]]
   name = "github.com/posener/complete"
   packages = [
     ".",
@@ -119,6 +125,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "36ebc67353965ff9b1e560a1f9a4a27dd85411b9d60a0f87d792e0faad52f837"
+  inputs-digest = "914cd659d2e070c7bc337653308a479e5d15ad9583eed19592896533b4246658"
   solver-name = "gps-cdcl"
   solver-version = 1
