@@ -3,6 +3,7 @@ package command
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 
 	client "github.com/jit-y/greco/github"
@@ -13,7 +14,16 @@ Usage: greco tags [options] <owner> <repo>
 `
 
 type Tags struct {
-	Name string
+	name     string
+	out, err io.Writer
+}
+
+func NewTagsCommand(name string, out, err io.Writer) (*Tags, error) {
+	return &Tags{
+		name: name,
+		out:  out,
+		err:  err,
+	}, nil
 }
 
 func (c *Tags) Synopsis() string {
@@ -31,7 +41,7 @@ func (c *Tags) Run(args []string) int {
 		per   int
 	)
 
-	flags := flag.NewFlagSet(c.Name, flag.ContinueOnError)
+	flags := flag.NewFlagSet(c.name, flag.ContinueOnError)
 	flags.Usage = func() {
 		fmt.Fprint(flags.Output(), c.Help())
 		flags.PrintDefaults()
@@ -60,18 +70,18 @@ func (c *Tags) Run(args []string) int {
 	github, err := client.NewClient(owner, repo, token)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err)
+		fmt.Fprintf(c.err, "%s\n", err)
 		return 1
 	}
 
 	tags, err := github.Tags(per, page)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err)
+		fmt.Fprintf(c.err, "%s\n", err)
 		return 1
 	}
 
 	for _, tag := range tags {
-		fmt.Println(tag.GetName())
+		fmt.Fprintln(c.out, tag.GetName())
 	}
 
 	return 0

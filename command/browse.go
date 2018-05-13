@@ -3,6 +3,7 @@ package command
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 
 	client "github.com/jit-y/greco/github"
@@ -10,12 +11,21 @@ import (
 )
 
 type Browse struct {
-	Name string
+	name     string
+	out, err io.Writer
 }
 
 var browseUsage = `
 Usage: greco browse [options] <owner> <repo> <from> <to>
 `
+
+func NewBrowseCommand(name string, out, err io.Writer) (*Browse, error) {
+	return &Browse{
+		name: name,
+		out:  out,
+		err:  err,
+	}, nil
+}
 
 func (c *Browse) Synopsis() string {
 	return "Browse"
@@ -28,7 +38,7 @@ func (c *Browse) Help() string {
 func (c *Browse) Run(args []string) int {
 	var token string
 
-	flags := flag.NewFlagSet(c.Name, flag.ContinueOnError)
+	flags := flag.NewFlagSet(c.name, flag.ContinueOnError)
 	flags.Usage = func() {
 		fmt.Fprint(flags.Output(), c.Help())
 		flags.PrintDefaults()
@@ -56,19 +66,19 @@ func (c *Browse) Run(args []string) int {
 	github, err := client.NewClient(owner, repo, token)
 
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintln(c.err, err)
 		return 1
 	}
 
 	comparison, err := github.Compare(from, to)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintln(c.err, err)
 		return 1
 	}
 
 	err = browser.OpenURL(*comparison.HTMLURL)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintln(c.err, err)
 		return 1
 	}
 
