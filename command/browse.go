@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/browser"
 )
 
+// Browse struct which is impremented cli.Command interfaces.
 type Browse struct {
 	name     string
 	out, err io.Writer
@@ -19,6 +20,7 @@ var browseUsage = `
 Usage: greco browse [options] <owner> <repo> <from> <to>
 `
 
+// NewBrowseCommand creates a new Browse object.
 func NewBrowseCommand(name string, out, err io.Writer) (*Browse, error) {
 	return &Browse{
 		name: name,
@@ -27,14 +29,17 @@ func NewBrowseCommand(name string, out, err io.Writer) (*Browse, error) {
 	}, nil
 }
 
+// Synopsis returns a description of browse command.
 func (c *Browse) Synopsis() string {
 	return "Browse"
 }
 
+// Help returns a help message of browse command.
 func (c *Browse) Help() string {
 	return browseUsage
 }
 
+// Run open a web page of comparison with to and from.
 func (c *Browse) Run(args []string) int {
 	var token string
 

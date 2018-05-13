@@ -13,11 +13,13 @@ var tagsUsage = `
 Usage: greco tags [options] <owner> <repo>
 `
 
+// Tags struct which is impremented cli.Command interfaces.
 type Tags struct {
 	name     string
 	out, err io.Writer
 }
 
+// NewTagsCommand creates a new Tags object.
 func NewTagsCommand(name string, out, err io.Writer) (*Tags, error) {
 	return &Tags{
 		name: name,
@@ -26,14 +28,17 @@ func NewTagsCommand(name string, out, err io.Writer) (*Tags, error) {
 	}, nil
 }
 
+// Synopsis returns a description of tags command.
 func (c *Tags) Synopsis() string {
 	return "Tag"
 }
 
+// Help returns a help message of tags command.
 func (c *Tags) Help() string {
 	return tagsUsage
 }
 
+// Run puts a list of tags.
 func (c *Tags) Run(args []string) int {
 	var (
 		token string

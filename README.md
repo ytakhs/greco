@@ -18,3 +18,14 @@ Usage: greco tags [options] <owner> <repo>
 
   -token string
 ```
+
+```shell
+$ greco browse
+
+Usage: greco browse [options] <owner> <repo> <from> <to>
+
+  -t string
+
+  -token string
+
+```

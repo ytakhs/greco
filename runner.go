@@ -14,7 +14,7 @@ type Runner struct {
 	out, err io.Writer
 }
 
-// Run is main interfacen
+// Run is main interface.
 func (r *Runner) Run(args []string) int {
 	c := cli.NewCLI(Name, Version)
 	c.Args = os.Args[1:]
