@@ -41,8 +41,8 @@ func (c *Tags) Run(args []string) int {
 	flags.StringVar(&token, "token", os.Getenv("GITHUB_TOKEN"), "")
 	flags.StringVar(&token, "t", os.Getenv("GITHUB_TOKEN"), "")
 	flags.IntVar(&page, "page", 1, "")
-	flags.IntVar(&per, "per", 50, "")
-	flags.IntVar(&per, "p", 50, "")
+	flags.IntVar(&per, "per", 10, "")
+	flags.IntVar(&per, "p", 10, "")
 
 	if err := flags.Parse(args); err != nil {
 		return 1
