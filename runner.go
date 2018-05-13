@@ -25,6 +25,9 @@ func (r *Runner) Run(args []string) int {
 		"browse": func() (cli.Command, error) {
 			return command.NewBrowseCommand("browse", r.out, r.err)
 		},
+		"diff": func() (cli.Command, error) {
+			return command.NewDiffCommand("diff", r.out, r.err)
+		},
 	}
 
 	exitStatus, err := c.Run()
