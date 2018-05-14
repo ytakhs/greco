@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/browser"
 )
 
-// Browse struct which is impremented cli.Command interfaces.
+// Browse is a struct which is impremented cli.Command interface.
 type Browse struct {
 	name     string
 	out, err io.Writer
@@ -48,6 +48,7 @@ func (c *Browse) Run(args []string) int {
 		fmt.Fprint(flags.Output(), c.Help())
 		flags.PrintDefaults()
 	}
+	flags.SetOutput(c.err)
 
 	flags.StringVar(&token, "token", os.Getenv("GITHUB_TOKEN"), "")
 	flags.StringVar(&token, "t", os.Getenv("GITHUB_TOKEN"), "")

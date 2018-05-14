@@ -10,6 +10,7 @@ import (
 	client "github.com/jit-y/greco/github"
 )
 
+// Diff is a struct which is impremented cli.Command interface.
 type Diff struct {
 	name     string
 	out, err io.Writer
@@ -19,6 +20,7 @@ var diffUsage = `
 Usage: greco diff [options] <owner> <repo> <from> <to>
 `
 
+// NewDiffCommand creates a new Diff object.
 func NewDiffCommand(name string, out, err io.Writer) (*Diff, error) {
 	return &Diff{
 		name: name,
@@ -32,10 +34,12 @@ func (c *Diff) Synopsis() string {
 	return "Tag"
 }
 
+// Help returns a help message of diff command.
 func (c *Diff) Help() string {
 	return diffUsage
 }
 
+// Run shows diff of comparison with to and from.
 func (c *Diff) Run(args []string) int {
 	var (
 		token    string
@@ -47,6 +51,7 @@ func (c *Diff) Run(args []string) int {
 		fmt.Fprint(flags.Output(), c.Help())
 		flags.PrintDefaults()
 	}
+	flags.SetOutput(c.err)
 
 	flags.StringVar(&token, "token", os.Getenv("GITHUB_TOKEN"), "")
 	flags.StringVar(&token, "t", os.Getenv("GITHUB_TOKEN"), "")

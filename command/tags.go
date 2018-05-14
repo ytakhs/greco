@@ -13,7 +13,7 @@ var tagsUsage = `
 Usage: greco tags [options] <owner> <repo>
 `
 
-// Tags struct which is impremented cli.Command interfaces.
+// Tags struct which is impremented cli.Command interface.
 type Tags struct {
 	name     string
 	out, err io.Writer
@@ -51,6 +51,7 @@ func (c *Tags) Run(args []string) int {
 		fmt.Fprint(flags.Output(), c.Help())
 		flags.PrintDefaults()
 	}
+	flags.SetOutput(c.err)
 
 	flags.StringVar(&token, "token", os.Getenv("GITHUB_TOKEN"), "")
 	flags.StringVar(&token, "t", os.Getenv("GITHUB_TOKEN"), "")
