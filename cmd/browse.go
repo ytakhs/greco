@@ -13,8 +13,7 @@ import (
 type browse struct {
 	out, err io.Writer
 	token    string
-	owner    string
-	repo     string
+	client   *client.Client
 	from     string
 	to       string
 }
@@ -35,10 +34,16 @@ func newBrowseCmd(out, err io.Writer) *cobra.Command {
 				return errors.New("command `tags` requires <owner> <repo>")
 			}
 
-			b.owner = args[0]
-			b.repo = args[1]
+			owner := args[0]
+			repo := args[1]
 			b.from = args[2]
 			b.to = args[3]
+
+			client, err := client.NewClient(owner, repo, b.token)
+			if err != nil {
+				return err
+			}
+			b.client = client
 
 			if err := b.run(args); err != nil {
 				return err
@@ -55,12 +60,7 @@ func newBrowseCmd(out, err io.Writer) *cobra.Command {
 }
 
 func (b *browse) run(args []string) error {
-	github, err := client.NewClient(b.owner, b.repo, b.token)
-	if err != nil {
-		return err
-	}
-
-	comparison, err := github.Compare(b.from, b.to)
+	comparison, err := b.client.Compare(b.from, b.to)
 	if err != nil {
 		return err
 	}

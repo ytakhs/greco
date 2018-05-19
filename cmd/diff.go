@@ -14,8 +14,7 @@ import (
 type diff struct {
 	name     string
 	out, err io.Writer
-	owner    string
-	repo     string
+	client   *client.Client
 	token    string
 	from     string
 	to       string
@@ -37,10 +36,16 @@ func newDiffCmd(out, err io.Writer) *cobra.Command {
 				return errors.New("command `tags` requires <owner> <repo>")
 			}
 
-			d.owner = args[0]
-			d.repo = args[1]
+			owner := args[0]
+			repo := args[1]
 			d.from = args[2]
 			d.to = args[3]
+
+			client, err := client.NewClient(owner, repo, d.token)
+			if err != nil {
+				return err
+			}
+			d.client = client
 
 			if err := d.run(args); err != nil {
 				return err
@@ -59,12 +64,7 @@ func newDiffCmd(out, err io.Writer) *cobra.Command {
 
 // Run shows diff of comparison with to and from.
 func (d *diff) run(args []string) error {
-	gh, err := client.NewClient(d.owner, d.repo, d.token)
-	if err != nil {
-		return err
-	}
-
-	comparison, err := gh.Compare(d.from, d.to)
+	comparison, err := d.client.Compare(d.from, d.to)
 	if err != nil {
 		return err
 	}

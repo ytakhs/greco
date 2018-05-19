@@ -14,8 +14,7 @@ type tags struct {
 	token    string
 	per      int
 	page     int
-	owner    string
-	repo     string
+	client   *client.Client
 }
 
 func newTagsCmd(out, err io.Writer) *cobra.Command {
@@ -34,8 +33,15 @@ func newTagsCmd(out, err io.Writer) *cobra.Command {
 				return errors.New("command `tags` requires <owner> <repo>")
 			}
 
-			t.owner = args[0]
-			t.repo = args[1]
+			owner := args[0]
+			repo := args[1]
+
+			client, err := client.NewClient(owner, repo, t.token)
+			if err != nil {
+				return err
+			}
+
+			t.client = client
 
 			if err := t.run(args); err != nil {
 				return err
@@ -54,12 +60,7 @@ func newTagsCmd(out, err io.Writer) *cobra.Command {
 }
 
 func (t *tags) run(args []string) error {
-	github, err := client.NewClient(t.owner, t.repo, t.token)
-	if err != nil {
-		return err
-	}
-
-	tags, err := github.Tags(t.per, t.page)
+	tags, err := t.client.Tags(t.per, t.page)
 	if err != nil {
 		return err
 	}
