@@ -10,8 +10,7 @@ import (
 	"github.com/pkg/browser"
 )
 
-// Browse is struct
-type Browse struct {
+type browse struct {
 	out, err io.Writer
 	token    string
 	owner    string
@@ -21,7 +20,7 @@ type Browse struct {
 }
 
 func newBrowseCmd(out, err io.Writer) *cobra.Command {
-	b := Browse{
+	b := browse{
 		out: out,
 		err: err,
 	}
@@ -55,7 +54,7 @@ func newBrowseCmd(out, err io.Writer) *cobra.Command {
 	return cmd
 }
 
-func (b *Browse) run(args []string) error {
+func (b *browse) run(args []string) error {
 	github, err := client.NewClient(b.owner, b.repo, b.token)
 	if err != nil {
 		return err

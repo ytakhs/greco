@@ -9,8 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Tags struct
-type Tags struct {
+type tags struct {
 	out, err io.Writer
 	token    string
 	per      int
@@ -20,7 +19,7 @@ type Tags struct {
 }
 
 func newTagsCmd(out, err io.Writer) *cobra.Command {
-	t := Tags{
+	t := tags{
 		out: out,
 		err: err,
 	}
@@ -54,7 +53,7 @@ func newTagsCmd(out, err io.Writer) *cobra.Command {
 	return cmd
 }
 
-func (t *Tags) run(args []string) error {
+func (t *tags) run(args []string) error {
 	github, err := client.NewClient(t.owner, t.repo, t.token)
 	if err != nil {
 		return err

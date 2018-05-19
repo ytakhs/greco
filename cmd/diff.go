@@ -11,8 +11,7 @@ import (
 	client "github.com/jit-y/greco/github"
 )
 
-// Diff is a struct
-type Diff struct {
+type diff struct {
 	name     string
 	out, err io.Writer
 	owner    string
@@ -24,7 +23,7 @@ type Diff struct {
 }
 
 func newDiffCmd(out, err io.Writer) *cobra.Command {
-	d := Diff{
+	d := diff{
 		out: out,
 		err: err,
 	}
@@ -59,7 +58,7 @@ func newDiffCmd(out, err io.Writer) *cobra.Command {
 }
 
 // Run shows diff of comparison with to and from.
-func (d *Diff) run(args []string) error {
+func (d *diff) run(args []string) error {
 	gh, err := client.NewClient(d.owner, d.repo, d.token)
 	if err != nil {
 		return err
