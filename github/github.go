@@ -12,6 +12,7 @@ type Client struct {
 	owner        string
 	repo         string
 	Repositories *github.RepositoriesService
+	Search       *github.SearchService
 }
 
 // NewClient creates a new object which contains github's Repository object.
@@ -31,6 +32,7 @@ func NewClient(owner string, repo string, token string) (*Client, error) {
 		owner:        owner,
 		repo:         repo,
 		Repositories: gh.Repositories,
+		Search:       gh.Search,
 	}
 
 	return client, nil
@@ -59,4 +61,14 @@ func (c *Client) Compare(from string, to string) (*github.CommitsComparison, err
 	}
 
 	return comparison, err
+}
+
+func (c *Client) SearchRepositories() (*github.RepositoriesSearchResult, error) {
+	opts := &github.SearchOptions{Sort: "created", Order: "asc"}
+	searchResult, _, err := c.Search.Repositories(context.Background(), c.repo, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return searchResult, nil
 }
