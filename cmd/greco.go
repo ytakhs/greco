@@ -17,6 +17,7 @@ func NewRootCmd(args []string) *cobra.Command {
 		newTagsCmd(os.Stdout, os.Stderr),
 		newBrowseCmd(os.Stdout, os.Stderr),
 		newDiffCmd(os.Stdout, os.Stderr),
+		newSearchCmd(os.Stdout, os.Stderr),
 	)
 
 	return cmd
